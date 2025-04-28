@@ -1,10 +1,11 @@
-﻿# Cameek.W3CssJs.Bootstrap
+﻿
+# Cameek.W3CssJs.Mermaid
 
-![NuGet](https://img.shields.io/nuget/v/Cameek.W3CssJs.Bootstrap?label=NuGet&logo=nuget)  
+![NuGet](https://img.shields.io/nuget/v/Cameek.W3CssJs.Mermaid?label=NuGet&logo=nuget)  
 ![.NET](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)
 
-**Cameek.W3CssJs.Bootstrap** is a Razor Class Library (RCL) that contains static assets (CSS, JavaScript, and Fonts) for [Bootstrap 5](https://getbootstrap.com/).  
-It is intended to be referenced from other Blazor or Razor ASP.NET Core projects to enable easy styling and responsive layout support.
+**Cameek.W3CssJs.Mermaid** is a Razor Class Library (RCL) that contains static assets (JavaScript) for [MermaidJS](https://mermaid-js.github.io/mermaid/).  
+It is intended to be referenced from other Blazor or Razor ASP.NET Core projects to enable easy rendering of diagrams and flowcharts from simple text definitions.
 
 This library supports both Blazor WebAssembly and Blazor Server applications.
 
@@ -12,12 +13,11 @@ This library supports both Blazor WebAssembly and Blazor Server applications.
 
 ## ✨ Features
 
-- Includes full Bootstrap 5.3.x core (CSS + JS)
-- Includes Grid, Reboot, and Utilities modules (minified and RTL)
-- Provides Bootstrap JavaScript bundles (standard, bundle, and ESM versions)
-- Includes **Bootstrap Icons** CSS + web fonts (`.woff`, `.woff2`)
-- Files are accessible under `_content/Cameek.W3CssJs.Bootstrap/`
-- Ideal for offline or self-contained Blazor deployment
+- Includes **MermaidJS** (`mermaid.min.js`) for direct browser usage
+- Includes **MermaidJS ESM** module (`mermaid.esm.min.mjs`) for modern environments
+- Files are accessible under `_content/Cameek.W3CssJs.Mermaid/`
+- No external CDN dependency required after deployment
+- Ideal for offline use or self-contained Blazor apps
 
 ---
 
@@ -26,13 +26,13 @@ This library supports both Blazor WebAssembly and Blazor Server applications.
 Install from NuGet:
 
 ```bash
-dotnet add package Cameek.W3CssJs.Bootstrap --version 5.3.2
+dotnet add package Cameek.W3CssJs.Mermaid --version 10.9.0
 ```
 
 Or add directly to your `.csproj`:
 
 ```xml
-<PackageReference Include="Cameek.W3CssJs.Bootstrap" Version="5.3.2" />
+<PackageReference Include="Cameek.W3CssJs.Mermaid" Version="10.9.0" />
 ```
 
 ---
@@ -41,37 +41,48 @@ Or add directly to your `.csproj`:
 
 In your `index.html` (Blazor WebAssembly) or `_Host.cshtml` (Blazor Server), include:
 
-### ✅ Basic Bootstrap (CSS + Bundle JS)
+### ✅ Browser (Standard)
 
 ```html
-<link href="_content/Cameek.W3CssJs.Bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-<script src="_content/Cameek.W3CssJs.Bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="_content/Cameek.W3CssJs.Mermaid/js/mermaid.min.js"></script>
+
+<script>
+  mermaid.initialize({ startOnLoad: true });
+</script>
 ```
 
-### 🧩 Optional Extensions (Grid, RTL, Utilities)
+### ✅ ESM (Optional Advanced Setup)
+
+If you are working in an ESM-compatible setup:
 
 ```html
-<link href="_content/Cameek.W3CssJs.Bootstrap/css/bootstrap-grid.min.css" rel="stylesheet" />
-<link href="_content/Cameek.W3CssJs.Bootstrap/css/bootstrap-utilities.rtl.min.css" rel="stylesheet" />
+<script type="module">
+  import mermaid from '_content/Cameek.W3CssJs.Mermaid/js/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
 ```
 
-### 🎨 Bootstrap Icons (Fonts)
+---
+
+## 🎯 Example
 
 ```html
-<link href="_content/Cameek.W3CssJs.Bootstrap/css/bootstrap-icons.css" rel="stylesheet" />
+<div class="mermaid">
+graph TD
+    A[Start] --> B{Is it working?}
+    B -- Yes --> C[Great!]
+    B -- No --> D[Check Logs]
+</div>
 ```
 
-This CSS file will automatically load fonts from:
-
-- `_content/Cameek.W3CssJs.Bootstrap/css/fonts/bootstrap-icons.woff2`
-- `_content/Cameek.W3CssJs.Bootstrap/css/fonts/bootstrap-icons.woff`
+Mermaid will automatically render the diagram from the text inside the `<div class="mermaid">`.
 
 ---
 
 ## 📄 License
 
-This package redistributes official Bootstrap and Bootstrap Icons assets under their respective [MIT license](https://github.com/twbs/bootstrap/blob/main/LICENSE).  
-See also the included `LICENSE-bootstrap.txt` in the NuGet package.
+This package redistributes official MermaidJS assets under their original [MIT license](https://github.com/mermaid-js/mermaid/blob/develop/LICENSE).  
+See the included `LICENSE-mermaid.txt` inside the NuGet package.
 
 ---
 
@@ -84,5 +95,6 @@ This project is intended for internal use across Cameek-based Blazor solutions.
 
 ## 📬 Related Projects
 
+- [Cameek.W3CssJs.Bootstrap](https://www.nuget.org/packages/Cameek.W3CssJs.Bootstrap) – Bootstrap 5 packaged for Blazor apps
 - [Cameek.W3CssJs.PrismJs](https://www.nuget.org/packages/Cameek.W3CssJs.PrismJs) – PrismJS syntax highlighting for Blazor
-- [Bootstrap](https://getbootstrap.com/) – Open-source UI toolkit for building responsive web apps
+- [MermaidJS](https://mermaid-js.github.io/mermaid/) – Generation of diagrams and flowcharts from text

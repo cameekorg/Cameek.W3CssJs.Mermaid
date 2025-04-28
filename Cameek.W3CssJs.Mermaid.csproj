@@ -10,11 +10,11 @@
 
         <!-- NuGet Metadata -->
         <PackageId>Cameek.W3CssJs.Mermaid</PackageId>
-        <Version>1.30.2</Version>
+        <Version>10.9.0</Version>
         <Authors>Cameek</Authors>
         <Company>Cameek</Company>
-        <Description>Static Razor Class Library with Mermaid assets for syntax highlighting in Blazor WebAssembly and Blazor Server apps.</Description>
-        <PackageTags>blazor;mermaid;syntax-highlighting;razor-class-library;webassets</PackageTags>
+        <Description>Static Razor Class Library with Mermaid assets for diagrams in Blazor WebAssembly and Blazor Server apps.</Description>
+        <PackageTags>blazor;mermaid;diagrams;razor-class-library;webassets</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/cameekorg/Cameek.W3CssJs.Mermaid</RepositoryUrl>
         <PackageProjectUrl>https://github.com/cameekorg/Cameek.W3CssJs.Mermaid</PackageProjectUrl>
