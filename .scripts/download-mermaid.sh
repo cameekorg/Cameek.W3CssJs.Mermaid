@@ -11,7 +11,7 @@ cd "$(dirname "$0")" || exit
 
 echo "Configuring Version and URLs"
 echo "----------------------------"
-VERSION="10.9.0"
+VERSION="11.6.0"
 URL_BASE="https://cdn.jsdelivr.net/npm/mermaid@${VERSION}/dist"
 
 # License
