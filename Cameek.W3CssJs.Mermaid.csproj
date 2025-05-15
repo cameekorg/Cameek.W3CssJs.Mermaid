@@ -10,7 +10,7 @@
 
         <!-- NuGet Metadata -->
         <PackageId>Cameek.W3CssJs.Mermaid</PackageId>
-        <Version>11.6.2</Version>
+        <Version>11.6.3</Version>
         <Authors>Cameek</Authors>
         <Company>Cameek</Company>
         <Description>Static Razor Class Library with Mermaid assets for diagrams in Blazor WebAssembly and Blazor Server apps.</Description>
