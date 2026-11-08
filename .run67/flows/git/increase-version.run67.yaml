@@ -1,0 +1,67 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: increase-version
+  namespace: maintenance.git
+  title: 🏷️ Increase version
+  description: Preview and confirm a package-version change without committing or tagging.
+  tags: [git, version, maintenance]
+
+target: local
+
+inputs:
+  bumpType:
+    type: string
+    default: patch
+    allowedValues: [patch, minor, major]
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: preview-version
+    title: 👀 Preview version change
+    run:
+      executable: bash
+      arguments:
+        - .scripts/increase-version.sh
+        - "${{ inputs.bumpType }}"
+        - --dry-run
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: show-release-plan
+    title: 📋 Review version plan
+    message:
+      text: |
+        Repository:
+        ${{ trim(steps.detect-repository-root.outputs.stdout) }}
+
+        Planned change:
+        ${{ trim(steps.preview-version.outputs.stdout) }}
+
+        Only the configured package-version file is changed. Review and commit
+        it separately, or use Increase & release for the complete release process.
+
+  - id: confirm-release
+    title: ✅ Confirm version action
+    confirm:
+      message: Apply this version change to the configured version file?
+
+  - id: increase-version
+    title: 🏷️ Increase version
+    run:
+      executable: bash
+      arguments:
+        - .scripts/increase-version.sh
+        - "${{ inputs.bumpType }}"
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: complete
+    title: 🎉 Version action completed
+    message:
+      text: Version file updated. Review the change before committing or tagging.

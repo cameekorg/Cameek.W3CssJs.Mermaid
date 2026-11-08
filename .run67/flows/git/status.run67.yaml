@@ -1,0 +1,28 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: status
+  namespace: maintenance.git
+  title: 🌿 Repository status
+  description: Show the branch, working-tree status and current package version.
+  tags: [git, development, status]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: show-status
+    title: 🌿 Show repository status
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - status
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

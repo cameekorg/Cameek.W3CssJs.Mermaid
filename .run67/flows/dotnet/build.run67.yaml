@@ -1,0 +1,28 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: build
+  namespace: maintenance.dotnet
+  title: 🔨 Build
+  description: Build the configured project or solution in Release.
+  tags: [dotnet, development, build]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: build-project
+    title: 🔨 Build
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - build
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

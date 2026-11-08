@@ -1,0 +1,77 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: increase-and-release-version
+  namespace: maintenance.git
+  title: 🚀 Increase & release version
+  description: Preview and confirm a version bump, branch push and matching release tag.
+  tags: [git, version, maintenance]
+
+target: local
+
+inputs:
+  bumpType:
+    type: string
+    default: patch
+    allowedValues: [patch, minor, major]
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: detect-current-branch
+    title: 🌿 Read current branch
+    run:
+      executable: git
+      arguments: [branch, --show-current]
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: preview-release
+    title: 👀 Preview version change
+    run:
+      executable: bash
+      arguments:
+        - .scripts/increase-and-tag-version.sh
+        - "${{ inputs.bumpType }}"
+        - --dry-run
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: show-release-plan
+    title: 📋 Review version plan
+    message:
+      text: |
+        Repository:
+        ${{ trim(steps.detect-repository-root.outputs.stdout) }}
+
+        Planned change:
+        ${{ trim(steps.preview-release.outputs.stdout) }}
+
+        This creates one version-bump commit, pushes the current branch, then
+        creates and pushes its matching vMAJOR.MINOR.PATCH tag. The tag starts
+        the repository's NuGet publishing workflow.
+
+  - id: confirm-release
+    title: ✅ Confirm version action
+    confirm:
+      message: Commit and push this version bump, then create and push its release tag?
+
+  - id: release-version
+    title: 🚀 Increase & release version
+    run:
+      interaction: terminal
+      executable: bash
+      arguments:
+        - .scripts/increase-and-tag-version.sh
+        - "${{ inputs.bumpType }}"
+        - --yes
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: complete
+    title: 🎉 Version action completed
+    message:
+      text: Version commit and release tag were pushed. Check GitHub Actions for publication status.

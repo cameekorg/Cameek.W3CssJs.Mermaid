@@ -1,0 +1,28 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: test
+  namespace: maintenance.dotnet
+  title: 🧪 Test
+  description: Run the configured Release tests, or explain when no test project exists.
+  tags: [dotnet, development, test]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: test-project
+    title: 🧪 Test
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - test
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

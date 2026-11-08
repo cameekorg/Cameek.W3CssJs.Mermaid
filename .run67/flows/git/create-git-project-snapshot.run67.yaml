@@ -1,0 +1,60 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: create-git-project-snapshot
+  namespace: maintenance.git
+  title: 📸 Git snapshot
+  description: Archive committed HEAD with recent commit patches and checksums.
+  tags: [git, snapshot, maintenance]
+
+target: local
+
+inputs:
+  commitCount:
+    type: integer
+    default: 1
+    minimum: 1
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: show-status
+    title: 🌿 Show repository status
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - status
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: show-snapshot-plan
+    title: 👀 Review snapshot
+    message:
+      text: |
+        Repository:
+        ${{ trim(steps.detect-repository-root.outputs.stdout) }}
+
+        Create an archive of committed HEAD, a patch containing the latest
+        ${{ inputs.commitCount }} commits, and SHA-256 checksums under artifacts/snapshots.
+        Existing snapshots are retained. Uncommitted and untracked files are excluded.
+
+  - id: confirm-snapshot
+    title: ✅ Confirm snapshot
+    confirm:
+      message: Create a new committed-source archive, recent-commit patch and checksums?
+
+  - id: create-snapshot
+    title: 📸 Create Git snapshot
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - snapshot
+        - "${{ inputs.commitCount }}"
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

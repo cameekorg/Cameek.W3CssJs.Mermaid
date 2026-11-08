@@ -1,0 +1,28 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: restore
+  namespace: maintenance.dotnet
+  title: ♻️ Restore dependencies
+  description: Restore dependencies for the configured project or solution.
+  tags: [dotnet, development, restore]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: restore-project
+    title: ♻️ Restore dependencies
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - restore
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

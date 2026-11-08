@@ -1,0 +1,28 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: package
+  namespace: maintenance.dotnet
+  title: 📦 Package
+  description: Build local NuGet packages using the repository packaging recipe.
+  tags: [dotnet, development, package]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: package-project
+    title: 📦 Package
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - pack
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

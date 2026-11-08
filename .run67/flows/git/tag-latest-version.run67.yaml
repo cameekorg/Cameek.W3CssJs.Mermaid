@@ -1,0 +1,51 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: tag-latest-version
+  namespace: maintenance.git
+  title: 🏷️ Tag current version
+  description: Preview and confirm publishing the current committed package-version tag.
+  tags: [git, version, maintenance]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: preview-tag
+    title: 👀 Preview current-version tag
+    run:
+      executable: bash
+      arguments:
+        - .scripts/tag-latest-version.sh
+        - --dry-run
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"
+
+  - id: show-tag-plan
+    title: 📋 Review tag plan
+    message:
+      text: |
+        ${{ trim(steps.preview-tag.outputs.stdout) }}
+
+        A pushed version tag starts the repository's NuGet publishing workflow.
+
+  - id: confirm-tag
+    title: ✅ Confirm release tag
+    confirm:
+      message: Create and push the current committed version tag?
+
+  - id: tag-version
+    title: 🏷️ Tag current version
+    run:
+      interaction: terminal
+      executable: bash
+      arguments:
+        - .scripts/tag-latest-version.sh
+        - --yes
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

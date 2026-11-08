@@ -1,0 +1,72 @@
+# Project resources load only after the existing Run67 project-trust decision.
+version: 2
+defaultTab: project-ops
+
+tabs:
+  - id: explorer
+    type: flows
+    label: "📚 Flows"
+
+  - id: project-ops
+    type: favorites
+    label: "🔖 Cameek.W3CssJs.Mermaid Project"
+    rows:
+      # The repository adapter selects this project's solution and packages.
+      - items:
+          - label: "♻️ Restore"
+            flow: ./flows/dotnet/restore.run67.yaml
+            color: darkCyan
+          - label: "🔨 Build"
+            flow: ./flows/dotnet/build.run67.yaml
+            color: darkBlue
+          - label: "🧪 Test"
+            flow: ./flows/dotnet/test.run67.yaml
+            color: darkCyan
+          - label: "📦 Package"
+            flow: ./flows/dotnet/package.run67.yaml
+            color: darkMagenta
+          - label: "🧹 Cleanup"
+            flow: ./flows/dotnet/cleanup.run67.yaml
+            color: darkRed
+
+      - items:
+          - label: "🌿 Git Status"
+            flow: ./flows/git/status.run67.yaml
+            color: darkGreen
+          - label: "📸 Git Snapshot"
+            flow: ./flows/git/create-git-project-snapshot.run67.yaml
+            color: darkCyan
+
+      # These remain ordinary approved flows with explicit confirmations.
+      - items:
+          - label: "🏷️ Increase Version"
+            flow: ./flows/git/increase-version.run67.yaml
+            color: darkYellow
+          - label: "🏷️ Tag Current Version"
+            flow: ./flows/git/tag-latest-version.run67.yaml
+            color: darkYellow
+          - label: "🚀 Increase & Release"
+            flow: ./flows/git/increase-and-release-version.run67.yaml
+            color: darkYellow
+
+  - id: project-help
+    type: text
+    label: "❔ Project Help"
+    text: |-
+      Restore / Build / Test use this repository's configured project or solution.
+      Package creates local NuGet packages; it does not publish them.
+      Cleanup confirms before cleaning generated Debug and Release output.
+      Git Status shows the current branch, version and working-tree changes.
+      Git Snapshot archives committed HEAD and retains earlier snapshots.
+
+      Increase Version changes only the package-version file.
+      Tag Current Version pushes the current committed version tag.
+      Increase & Release bumps patch/minor/major, commits, pushes and tags.
+      A version tag starts the GitHub NuGet publishing workflow.
+
+      Start Run67 from inside this checkout. All actions retain normal project
+      trust, Plan Review and approval. Mutation flows also ask for confirmation.
+
+  - id: editor
+    type: editor
+    label: "📝 Editor"

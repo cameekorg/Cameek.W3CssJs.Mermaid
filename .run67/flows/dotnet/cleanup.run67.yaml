@@ -1,0 +1,43 @@
+apiVersion: run67/v1
+kind: Flow
+
+metadata:
+  name: cleanup
+  namespace: maintenance.dotnet
+  title: 🧹 Clean generated output
+  description: Clean generated Debug and Release output for the configured project or solution.
+  tags: [dotnet, development, cleanup]
+
+target: local
+
+steps:
+  # Resolve the checkout before using repository-relative scripts.
+  - id: detect-repository-root
+    title: 📍 Locate repository
+    run:
+      executable: git
+      arguments: [rev-parse, --show-toplevel]
+
+  - id: show-cleanup-plan
+    title: 👀 Review cleanup
+    message:
+      text: |
+        Clean generated project output in:
+        ${{ trim(steps.detect-repository-root.outputs.stdout) }}
+
+        The repository adapter cleans Debug and Release build outputs.
+        Local package feeds and earlier snapshots remain available.
+
+  - id: confirm-cleanup
+    title: ✅ Confirm cleanup
+    confirm:
+      message: Clean Debug and Release build output?
+
+  - id: clean-project
+    title: 🧹 Clean generated output
+    run:
+      executable: bash
+      arguments:
+        - .scripts/project.sh
+        - clean
+      workingDirectory: "${{ trim(steps.detect-repository-root.outputs.stdout) }}"

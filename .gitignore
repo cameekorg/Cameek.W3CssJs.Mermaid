@@ -2,3 +2,6 @@
 .vs/
 obj/
 bin/
+
+# Local packages and source snapshots from .scripts/project.sh.
+/artifacts/
