@@ -1,4 +1,4 @@
-﻿
+
 # Cameek.W3CssJs.Mermaid
 
 ![NuGet](https://img.shields.io/nuget/v/Cameek.W3CssJs.Mermaid?label=NuGet&logo=nuget)  
@@ -8,6 +8,29 @@
 It is intended to be referenced from other Blazor or Razor ASP.NET Core projects to enable easy rendering of diagrams and flowcharts from simple text definitions.
 
 This library supports both Blazor WebAssembly and Blazor Server applications.
+
+The package now bundles **Mermaid 11.17.2**, the current stable release in the
+Mermaid 11 series. It retains the existing browser and ESM URLs and includes
+their complete local module dependencies. No CDN access is needed at runtime.
+
+The additional `mermaid.core.mjs` file is upstream's unbundled entrypoint for
+bundler users. It requires Mermaid's upstream npm dependencies and is not a
+standalone browser script. Use the two `PathsMermaid` entrypoints below for
+packaged offline browser rendering.
+
+### Refreshing the bundled files
+
+Contributors need Python 3 for the download helpers:
+
+```bash
+bash .scripts/download-mermaid.sh
+```
+
+On Windows, run `.scripts/download-mermaid.ps1` or `.scripts/download-mermaid.bat`.
+All three launchers use the same pinned version in `download-mermaid.py`. The
+helper downloads the official npm archive, verifies its SHA-512 integrity, and
+copies the browser dependency closure and packaged MIT license without rewriting
+JavaScript. Old hashed chunks are removed after the new distribution is verified.
 
 ---
 
@@ -26,13 +49,13 @@ This library supports both Blazor WebAssembly and Blazor Server applications.
 Install from NuGet:
 
 ```bash
-dotnet add package Cameek.W3CssJs.Mermaid --version 10.9.0
+dotnet add package Cameek.W3CssJs.Mermaid --version 11.17.2
 ```
 
 Or add directly to your `.csproj`:
 
 ```xml
-<PackageReference Include="Cameek.W3CssJs.Mermaid" Version="10.9.0" />
+<PackageReference Include="Cameek.W3CssJs.Mermaid" Version="11.17.2" />
 ```
 
 ---
